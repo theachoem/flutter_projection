@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projection/pages/custom_paints/circle_painter_tab.dart';
 import 'package:flutter_projection/pages/custom_paints/line_painter_tab.dart';
+import 'package:flutter_projection/pages/custom_paints/rectangle_painter_tab.dart';
 
 class CustomPaintsPage extends StatelessWidget {
   const CustomPaintsPage({super.key});
@@ -10,6 +11,7 @@ class CustomPaintsPage extends StatelessWidget {
     final tabs = [
       const LinePainterTab(),
       const CirclePainterTab(),
+      const RectanglePainterTab(),
     ];
 
     return DefaultTabController(
