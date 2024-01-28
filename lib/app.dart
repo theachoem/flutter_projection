@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projection/pages/custom_paints/custom_paints_page.dart';
+import 'package:flutter_projection/pages/transform/transform_page.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -10,7 +10,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: const CustomPaintsPage(),
+      home: const TransformPage(),
     );
   }
 }
