@@ -24,8 +24,6 @@ class FlipableCardTab extends StatefulWidget {
 }
 
 class _FlipableCardTabState extends State<FlipableCardTab> {
-  bool front = true;
-
   // 0 to 360
   late double xDegrees;
   late double yDegrees;
@@ -101,8 +99,6 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
 
                 yDegrees -= details.delta.dx;
                 yDegrees %= 360;
-
-                front = xDegrees <= 90 || xDegrees >= 270;
               });
             },
             child: Container(
