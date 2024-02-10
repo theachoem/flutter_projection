@@ -35,6 +35,12 @@ class _SliderState extends State<_Slider> {
   }
 
   @override
+  void didUpdateWidget(covariant _Slider oldWidget) {
+    controller.text = widget.value.toString();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
