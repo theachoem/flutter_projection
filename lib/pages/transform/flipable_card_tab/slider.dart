@@ -1,6 +1,6 @@
 part of flipable_card_tab;
 
-class _Slider extends StatelessWidget {
+class _Slider extends StatefulWidget {
   const _Slider({
     required this.label,
     required this.value,
@@ -16,23 +16,59 @@ class _Slider extends StatelessWidget {
   final double max;
 
   @override
+  State<_Slider> createState() => _SliderState();
+}
+
+class _SliderState extends State<_Slider> {
+  late final TextEditingController controller;
+
+  @override
+  void initState() {
+    controller = TextEditingController(text: widget.value.toString());
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    controller.text = widget.value.toString();
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text("$label:"),
+        Text("${widget.label}:"),
         Expanded(
           child: Slider.adaptive(
-            label: label,
-            min: min,
-            max: max,
-            onChanged: onChanged,
-            value: value,
+            label: widget.label,
+            min: widget.min,
+            max: widget.max,
+            value: widget.value,
+            onChanged: (value) {
+              widget.onChanged?.call(value);
+              controller.text = value.toString();
+            },
           ),
         ),
         SizedBox(
           width: 64,
-          child: Text(value.toStringAsFixed(2)),
+          child: TextField(
+            controller: controller,
+            style: const TextStyle(fontSize: 12.0),
+            maxLines: 1,
+            decoration: const InputDecoration(border: InputBorder.none),
+            onSubmitted: (result) {
+              double? value = double.tryParse(result);
+
+              if (value != null && value >= widget.min && value <= widget.max) {
+                widget.onChanged?.call(value);
+              } else {
+                controller.text = widget.value.toString();
+              }
+            },
+          ),
         ),
       ],
     );

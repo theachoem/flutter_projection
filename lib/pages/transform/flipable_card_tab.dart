@@ -6,8 +6,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-part 'flipable_card_tab/rectangle_painter.dart';
+part 'flipable_card_tab/axis_painter.dart';
 part 'flipable_card_tab/card.dart';
+part 'flipable_card_tab/group.dart';
+part 'flipable_card_tab/rectangle_painter.dart';
 part 'flipable_card_tab/slider.dart';
 
 const Size _cardSize = Size(300, 200);
@@ -41,7 +43,7 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
     initData();
   }
 
-  void initData() {
+  void init3DData() {
     xDegrees = -60;
     yDegrees = 0;
     zDegrees = 45;
@@ -52,7 +54,7 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
     translateZ = 0;
   }
 
-  void straightenData() {
+  void initData() {
     xDegrees = 0;
     yDegrees = 0;
     zDegrees = 0;
@@ -74,17 +76,15 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
           children: [
             GestureDetector(
               supportedDevices: PointerDeviceKind.values.toSet(),
-              onVerticalDragUpdate: (details) {
+              onPanUpdate: (details) {
                 setState(() {
                   xDegrees += details.delta.dy;
                   xDegrees %= 360;
-                  front = xDegrees <= 90 || xDegrees >= 270;
-                });
-              },
-              onHorizontalDragUpdate: (details) {
-                setState(() {
+
                   yDegrees -= details.delta.dx;
                   yDegrees %= 360;
+
+                  front = xDegrees <= 90 || xDegrees >= 270;
                 });
               },
               child: ConstrainedBox(
@@ -93,26 +93,99 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
                   minWidth: _cardSize.width,
                 ),
                 child: Transform(
-                  alignment: Alignment.center,
-                  transform: transformZ(
-                    transformY(
-                      transformX(
-                        perspective(Matrix4.identity()..scale(scale)),
+                  transform: Matrix4.identity(),
+                  child: Stack(
+                    children: [
+                      Transform(
+                        alignment: Alignment.center,
+                        transform: transformZ(
+                          transformY(
+                            transformX(perspective(Matrix4.identity())),
+                          ),
+                        )
+                          ..translate(translateX, translateY, translateZ)
+                          ..scale(scale),
+                        child: const _Card(cardSize: _cardSize),
                       ),
-                    ),
-                  )..translate(translateX, translateY, translateZ),
-                  child: const _Card(cardSize: _cardSize),
+                      buildAxisLines(axis: 'x', label: 'X'),
+                      buildAxisLines(axis: 'y', label: 'Y'),
+                      Transform(
+                        transform: Matrix4.identity()
+                          ..rotateX(90 / 180 * math.pi)
+                          ..rotateY(90 / 180 * math.pi),
+                        child: buildAxisLines(axis: 'y', label: 'Z'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: _cardSize.width - _cardSize.height),
-            ...buildSliders(constraints),
+            SizedBox(height: _cardSize.width - _cardSize.height + 32.0),
+            buildSliders(constraints),
             const SizedBox(height: 32.0),
             _buildActions()
           ],
         ),
       );
     });
+  }
+
+  Widget buildSliders(BoxConstraints constraints) {
+    return Expanded(
+      child: PageView(
+        children: [
+          Column(
+            children: [
+              _Group(children: [
+                _Slider(
+                  label: 'rotated-X',
+                  value: xDegrees,
+                  onChanged: (e) => setState(() => xDegrees = e),
+                ),
+                _Slider(
+                  label: 'rotated-Y',
+                  value: yDegrees,
+                  onChanged: (e) => setState(() => yDegrees = e),
+                ),
+                _Slider(
+                  label: 'rotated-Z',
+                  value: zDegrees,
+                  onChanged: (e) => setState(() => zDegrees = e),
+                ),
+              ]),
+              _Group(children: [
+                _Slider(
+                  label: 'translate-X',
+                  value: translateX,
+                  onChanged: (e) => setState(() => translateX = e),
+                ),
+                _Slider(
+                  label: 'translate-Y',
+                  value: translateY,
+                  onChanged: (e) => setState(() => translateY = e),
+                ),
+                _Slider(
+                  label: 'translate-Z',
+                  value: translateZ,
+                  onChanged: (e) => setState(() => translateZ = e),
+                  min: -constraints.maxHeight,
+                  max: constraints.maxHeight,
+                ),
+              ]),
+              _Group(children: [
+                _Slider(
+                  label: 'scale',
+                  value: scale,
+                  onChanged: (e) => setState(() => scale = e),
+                  min: 0.5,
+                  max: 5,
+                ),
+              ]),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Matrix4 perspective([Matrix4? existing]) {
@@ -123,11 +196,11 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
     // return Matrix4(
     //   1.0, 0.0, 0.0, 0.0, //
     //   0.0, 1.0, 0.0, 0.0, //
-    //   0.0, 0.0, 1.0, 0.001, //
+    //   0.0, 0.0, 1.0, 0.005, //
     //   0.0, 0.0, 0.0, 1.0,
     // );
 
-    return existing..setEntry(3, 2, 0.001);
+    return existing..setEntry(3, 2, 0.005);
   }
 
   Matrix4 transformX([Matrix4? existing]) {
@@ -178,69 +251,35 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
     return existing..rotateZ(angle);
   }
 
-  List<Widget> buildSliders(BoxConstraints constraints) {
-    return [
-      _Slider(
-        label: 'rotated-X',
-        value: xDegrees,
-        onChanged: (e) => setState(() => xDegrees = e),
-      ),
-      _Slider(
-        label: 'rotated-Y',
-        value: yDegrees,
-        onChanged: (e) => setState(() => yDegrees = e),
-      ),
-      _Slider(
-        label: 'rotated-Z',
-        value: zDegrees,
-        onChanged: (e) => setState(() => zDegrees = e),
-      ),
-      _Slider(
-        label: 'translate-X',
-        value: translateX,
-        onChanged: (e) => setState(() => translateX = e),
-      ),
-      _Slider(
-        label: 'translate-Y',
-        value: translateY,
-        onChanged: (e) => setState(() => translateY = e),
-      ),
-      _Slider(
-        label: 'translate-Z',
-        value: translateZ,
-        onChanged: (e) => setState(() => translateZ = e),
-        min: -constraints.maxHeight,
-        max: constraints.maxHeight,
-      ),
-      _Slider(
-        label: 'scale',
-        value: scale,
-        onChanged: (e) => setState(() => scale = e),
-        min: 0.5,
-        max: 5,
-      ),
-    ];
+  CustomPaint buildAxisLines({
+    required String axis,
+    required String label,
+  }) {
+    return CustomPaint(
+      painter: _AxisPainter(axis: axis, label: label),
+      size: _cardSize,
+    );
   }
 
   Widget _buildActions() {
     return Row(
       children: [
         OutlinedButton.icon(
-          icon: const Icon(Icons.line_axis),
-          label: const Text("Stright"),
-          onPressed: () {
-            setState(() {
-              straightenData();
-            });
-          },
-        ),
-        const SizedBox(width: 8.0),
-        OutlinedButton.icon(
           icon: const Icon(Icons.history),
           label: const Text("Reset"),
           onPressed: () {
             setState(() {
               initData();
+            });
+          },
+        ),
+        const SizedBox(width: 8.0),
+        OutlinedButton.icon(
+          icon: const Icon(Icons.emoji_objects),
+          label: const Text("3D Look"),
+          onPressed: () {
+            setState(() {
+              init3DData();
             });
           },
         ),
