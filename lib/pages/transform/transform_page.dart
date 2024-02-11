@@ -15,13 +15,10 @@ class TransformPage extends StatelessWidget {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Transform"),
-          bottom: TabBar(
-            tabs: tabs.map((e) {
-              return Tab(text: e.runtimeType.toString());
-            }).toList(),
-          ),
+        appBar: TabBar(
+          tabs: tabs.map((e) {
+            return Tab(text: e.runtimeType.toString());
+          }).toList(),
         ),
         body: TabBarView(children: tabs),
       ),
