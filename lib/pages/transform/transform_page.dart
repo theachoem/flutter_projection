@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projection/pages/transform/flipable_card_tab.dart';
+import 'package:flutter_projection/pages/transform/quaternion_tab.dart';
 
 class TransformPage extends StatelessWidget {
   const TransformPage({super.key});
@@ -7,6 +8,7 @@ class TransformPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tabs = [
+      const QuaternionTab(),
       const FlipableCardTab(),
     ];
 
