@@ -1,7 +1,8 @@
-part of flipable_card_tab;
+import 'package:flutter/material.dart';
 
-class _Slider extends StatefulWidget {
-  const _Slider({
+class InputableSlider extends StatefulWidget {
+  const InputableSlider({
+    super.key,
     required this.label,
     required this.value,
     this.onChanged,
@@ -16,10 +17,10 @@ class _Slider extends StatefulWidget {
   final double max;
 
   @override
-  State<_Slider> createState() => _SliderState();
+  State<InputableSlider> createState() => _SliderState();
 }
 
-class _SliderState extends State<_Slider> {
+class _SliderState extends State<InputableSlider> {
   late final TextEditingController controller;
 
   @override
@@ -35,7 +36,7 @@ class _SliderState extends State<_Slider> {
   }
 
   @override
-  void didUpdateWidget(covariant _Slider oldWidget) {
+  void didUpdateWidget(covariant InputableSlider oldWidget) {
     controller.text = widget.value.toString();
     super.didUpdateWidget(oldWidget);
   }

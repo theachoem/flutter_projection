@@ -1,7 +1,8 @@
-part of flipable_card_tab;
+import 'package:flutter/material.dart';
 
-class _Group extends StatelessWidget {
-  const _Group({
+class Group extends StatelessWidget {
+  const Group({
+    super.key,
     required this.children,
   });
 

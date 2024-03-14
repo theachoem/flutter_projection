@@ -35,16 +35,26 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: DropdownMenu<String>(
-          onSelected: (value) {
-            setState(() {
-              index = pages.keys.toList().indexWhere((e) => e == value);
-            });
-          },
-          dropdownMenuEntries: pages.entries
-              .map((e) => DropdownMenuEntry(value: e.key, label: e.key))
-              .toList(),
-        ),
+        centerTitle: false,
+        title: const Text("Flutter Projection"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: DropdownMenu<String>(
+              inputDecorationTheme:
+                  const InputDecorationTheme(border: InputBorder.none),
+              initialSelection: pages.keys.first,
+              onSelected: (value) {
+                setState(() {
+                  index = pages.keys.toList().indexWhere((e) => e == value);
+                });
+              },
+              dropdownMenuEntries: pages.entries
+                  .map((e) => DropdownMenuEntry(value: e.key, label: e.key))
+                  .toList(),
+            ),
+          ),
+        ],
       ),
       body: IndexedStack(
         index: index,

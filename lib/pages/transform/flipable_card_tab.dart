@@ -6,11 +6,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:flutter_projection/pages/transform/local_widgets/group.dart';
+import 'package:flutter_projection/pages/transform/local_widgets/inputable_slider.dart';
+
 part 'flipable_card_tab/axis_painter.dart';
 part 'flipable_card_tab/card.dart';
-part 'flipable_card_tab/group.dart';
 part 'flipable_card_tab/rectangle_painter.dart';
-part 'flipable_card_tab/slider.dart';
 
 const Size _cardSize = Size(300, 200);
 
@@ -257,25 +258,25 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
     return ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
-        _Group(children: [
-          _Slider(
+        Group(children: [
+          InputableSlider(
             label: 'rotated-X',
             value: xDegreesSurface,
             onChanged: (e) => setState(() => xDegreesSurface = e),
           ),
-          _Slider(
+          InputableSlider(
             label: 'rotated-Y',
             value: yDegreesSurface,
             onChanged: (e) => setState(() => yDegreesSurface = e),
           ),
-          _Slider(
+          InputableSlider(
             label: 'rotated-Z',
             value: zDegreesSurface,
             onChanged: (e) => setState(() => zDegreesSurface = e),
           ),
         ]),
-        _Group(children: [
-          _Slider(
+        Group(children: [
+          InputableSlider(
             label: 'scale',
             value: scaleSurface,
             onChanged: (e) => setState(() => scaleSurface = e),
@@ -291,35 +292,35 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
     return ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
-        _Group(children: [
-          _Slider(
+        Group(children: [
+          InputableSlider(
             label: 'rotated-X',
             value: xDegrees,
             onChanged: (e) => setState(() => xDegrees = e),
           ),
-          _Slider(
+          InputableSlider(
             label: 'rotated-Y',
             value: yDegrees,
             onChanged: (e) => setState(() => yDegrees = e),
           ),
-          _Slider(
+          InputableSlider(
             label: 'rotated-Z',
             value: zDegrees,
             onChanged: (e) => setState(() => zDegrees = e),
           ),
         ]),
-        _Group(children: [
-          _Slider(
+        Group(children: [
+          InputableSlider(
             label: 'translate-X',
             value: translateX,
             onChanged: (e) => setState(() => translateX = e),
           ),
-          _Slider(
+          InputableSlider(
             label: 'translate-Y',
             value: translateY,
             onChanged: (e) => setState(() => translateY = e),
           ),
-          _Slider(
+          InputableSlider(
             label: 'translate-Z',
             value: translateZ,
             onChanged: (e) => setState(() => translateZ = e),
@@ -327,8 +328,8 @@ class _FlipableCardTabState extends State<FlipableCardTab> {
             max: constraints.maxHeight,
           ),
         ]),
-        _Group(children: [
-          _Slider(
+        Group(children: [
+          InputableSlider(
             label: 'scale',
             value: scale,
             onChanged: (e) => setState(() => scale = e),

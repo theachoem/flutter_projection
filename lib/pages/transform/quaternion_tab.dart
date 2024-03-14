@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_projection/pages/transform/local_widgets/group.dart';
+import 'package:flutter_projection/pages/transform/local_widgets/inputable_slider.dart';
 import 'package:vector_math/vector_math.dart' show Vector3, Quaternion;
 import 'dart:math' as math;
 
@@ -9,11 +13,14 @@ class QuaternionTab extends StatefulWidget {
   State<QuaternionTab> createState() => _QuaternionTabState();
 }
 
-class _QuaternionTabState extends State<QuaternionTab> {
-  double scale = 1.0;
-  double xDegrees = 45.0;
-  double yDegrees = 45.0;
-  double zDegrees = 45.0;
+class _QuaternionTabState extends State<QuaternionTab>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController controller;
+
+  late double scale;
+  late double xDegrees;
+  late double yDegrees;
+  late double zDegrees;
 
   // sphere datas
   double sphereRadius = 400;
@@ -27,6 +34,25 @@ class _QuaternionTabState extends State<QuaternionTab> {
   void initState() {
     radians = degrees * (math.pi / 180);
     cutHeight = sphereRadius * math.sin(radians);
+
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 5),
+    )..repeat();
+
+    xDegrees = 0;
+    yDegrees = 0;
+    zDegrees = 0;
+    scale = 1;
+
+    controller.addListener(() {
+      setState(() {
+        xDegrees = lerpDouble(-360, 360, controller.value)!;
+        yDegrees = lerpDouble(-360, 360, controller.value)!;
+        zDegrees = lerpDouble(-360, 360, controller.value)!;
+      });
+    });
+
     super.initState();
   }
 
@@ -50,7 +76,17 @@ class _QuaternionTabState extends State<QuaternionTab> {
             ],
           ),
         ),
-        buildSliders(),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Column(
+            children: [
+              buildActions(),
+              buildSliders(),
+            ],
+          ),
+        )
       ],
     );
   }
@@ -135,54 +171,86 @@ class _QuaternionTabState extends State<QuaternionTab> {
     );
   }
 
+  Widget buildActions() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        children: [
+          OutlinedButton.icon(
+            icon: const Icon(Icons.pause),
+            label: const Text("Stop"),
+            onPressed: () {
+              if (controller.isAnimating) {
+                controller.stop();
+              }
+            },
+          ),
+          const SizedBox(width: 8.0),
+          OutlinedButton.icon(
+            icon: const Icon(Icons.play_arrow),
+            label: const Text("Start"),
+            onPressed: () {
+              controller
+                ..forward()
+                ..repeat();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget buildSliders() {
-    return Column(
-      children: [
-        Slider.adaptive(
-          value: scale,
-          min: 0.1,
-          max: 5.0,
-          label: scale.toString(),
-          onChanged: (value) {
-            setState(() {
-              scale = value;
-            });
-          },
-        ),
-        Slider.adaptive(
-          value: xDegrees,
-          min: -360,
-          max: 360,
-          label: xDegrees.toString(),
-          onChanged: (value) {
-            setState(() {
-              xDegrees = value;
-            });
-          },
-        ),
-        Slider.adaptive(
-          value: yDegrees,
-          min: -360,
-          max: 360,
-          label: yDegrees.toString(),
-          onChanged: (value) {
-            setState(() {
-              yDegrees = value;
-            });
-          },
-        ),
-        Slider.adaptive(
-          value: zDegrees,
-          min: -360,
-          max: 360,
-          label: zDegrees.toString(),
-          onChanged: (value) {
-            setState(() {
-              zDegrees = value;
-            });
-          },
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: Group(
+        children: [
+          InputableSlider(
+            value: scale,
+            min: 0.1,
+            max: 5.0,
+            label: 'scale',
+            onChanged: (value) {
+              setState(() {
+                scale = value;
+              });
+            },
+          ),
+          InputableSlider(
+            value: xDegrees,
+            min: -360,
+            max: 360,
+            label: 'rotated-X',
+            onChanged: (value) {
+              setState(() {
+                xDegrees = value;
+              });
+            },
+          ),
+          InputableSlider(
+            value: yDegrees,
+            min: -360,
+            max: 360,
+            label: 'rotated-Y',
+            onChanged: (value) {
+              setState(() {
+                yDegrees = value;
+              });
+            },
+          ),
+          InputableSlider(
+            value: zDegrees,
+            min: -360,
+            max: 360,
+            label: 'rotated-Z',
+            onChanged: (value) {
+              setState(() {
+                zDegrees = value;
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 }

@@ -11,10 +11,10 @@ class CustomPaintsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tabs = {
+      'Paint Triangle': const TrianglePainterTab(),
       'Paint Line': const LinePainterTab(),
       'Paint Circle': const CirclePainterTab(),
       'Paint Rectangle': const RectanglePainterTab(),
-      'Paint Triangle': const TrianglePainterTab(),
       'Paint Curve': const CurvePainterTab(),
     };
 
