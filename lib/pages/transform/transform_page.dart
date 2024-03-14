@@ -7,20 +7,20 @@ class TransformPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = [
-      const QuaternionTab(),
-      const FlipableCardTab(),
-    ];
+    final tabs = {
+      'Quaternion': const QuaternionTab(),
+      'FlipableCard': const FlipableCardTab(),
+    };
 
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
         appBar: TabBar(
-          tabs: tabs.map((e) {
-            return Tab(text: e.runtimeType.toString());
+          tabs: tabs.keys.map((key) {
+            return Tab(text: key);
           }).toList(),
         ),
-        body: TabBarView(children: tabs),
+        body: TabBarView(children: tabs.values.toList()),
       ),
     );
   }

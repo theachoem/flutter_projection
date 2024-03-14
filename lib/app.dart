@@ -26,10 +26,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int index = 0;
 
-  final pages = [
-    const CustomPaintsPage(),
-    const TransformPage(),
-  ];
+  final pages = {
+    'Transformation': const TransformPage(),
+    'Custom Paints': const CustomPaintsPage(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -38,24 +38,17 @@ class _HomePageState extends State<HomePage> {
         title: DropdownMenu<String>(
           onSelected: (value) {
             setState(() {
-              index = pages.indexWhere((e) {
-                return e.runtimeType.toString() == value;
-              });
+              index = pages.keys.toList().indexWhere((e) => e == value);
             });
           },
-          dropdownMenuEntries: pages.map(
-            (e) {
-              return DropdownMenuEntry(
-                value: e.runtimeType.toString(),
-                label: e.runtimeType.toString(),
-              );
-            },
-          ).toList(),
+          dropdownMenuEntries: pages.entries
+              .map((e) => DropdownMenuEntry(value: e.key, label: e.key))
+              .toList(),
         ),
       ),
       body: IndexedStack(
         index: index,
-        children: pages,
+        children: pages.values.toList(),
       ),
     );
   }

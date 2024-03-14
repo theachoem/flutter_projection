@@ -10,23 +10,23 @@ class CustomPaintsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = [
-      const LinePainterTab(),
-      const CirclePainterTab(),
-      const RectanglePainterTab(),
-      const TrianglePainterTab(),
-      const CurvePainterTab(),
-    ];
+    final tabs = {
+      'Paint Line': const LinePainterTab(),
+      'Paint Circle': const CirclePainterTab(),
+      'Paint Rectangle': const RectanglePainterTab(),
+      'Paint Triangle': const TrianglePainterTab(),
+      'Paint Curve': const CurvePainterTab(),
+    };
 
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
         appBar: TabBar(
-          tabs: tabs.map((e) {
-            return Tab(text: e.runtimeType.toString());
+          tabs: tabs.keys.map((key) {
+            return Tab(text: key);
           }).toList(),
         ),
-        body: TabBarView(children: tabs),
+        body: TabBarView(children: tabs.values.toList()),
       ),
     );
   }

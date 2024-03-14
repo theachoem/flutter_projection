@@ -11,9 +11,9 @@ class QuaternionTab extends StatefulWidget {
 
 class _QuaternionTabState extends State<QuaternionTab> {
   double scale = 1.0;
-  double xDegrees = 0.0;
-  double yDegrees = 0.0;
-  double zDegrees = 0.0;
+  double xDegrees = 45.0;
+  double yDegrees = 45.0;
+  double zDegrees = 45.0;
 
   // sphere datas
   double sphereRadius = 400;
